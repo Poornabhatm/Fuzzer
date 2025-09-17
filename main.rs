@@ -2,7 +2,7 @@ use rand::Rng;
 use std::env;
 
 fn main() {
-    // STEP 1: Read input length from CLI args, or default to 16
+    // Read input length from CLI args, or default to 16
     let args: Vec<String> = env::args().collect();
     let input_length = if args.len() > 1 {
         args[1].parse::<usize>().unwrap_or(16)
@@ -14,13 +14,13 @@ fn main() {
     let mut best_score = f64::MIN;
 
     for _ in 0..1000 {
-        // STEP 2: Generate a random input of given length
+        // Generate a random input of given length
         let input = generate_random_input(input_length);
 
-        // STEP 3: Evaluate mock feedback score
+        //Evaluate mock feedback score
         let score = mock_feedback(&input);
 
-        // STEP 4: Track the best input
+        // Track the best input
         if score > best_score {
             best_score = score;
             best_input = input.clone();
