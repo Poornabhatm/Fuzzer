@@ -10,20 +10,19 @@ fn main() {
         16
     };
 
-    let mut best_input = vec![];
-    let mut best_score = f64::MIN;
+    // Start with one random input
+    let mut best_input = generate_random_input(input_length);
+    let mut best_score = mock_feedback(&best_input);
 
     for _ in 0..1000 {
-        // Generate a random input of given length
-        let input = generate_random_input(input_length);
+        // Mutate the current best input
+        let mutated_input = mutate_input(&best_input);
+        let score = mock_feedback(&mutated_input);
 
-        //Evaluate mock feedback score
-        let score = mock_feedback(&input);
-
-        // Track the best input
+        // If it's better, keep it as the new best
         if score > best_score {
             best_score = score;
-            best_input = input.clone();
+            best_input = mutated_input;
         }
     }
 
@@ -31,13 +30,27 @@ fn main() {
     println!("Best Input: {:?}", best_input);
 }
 
-// Generate random input of a given length
+// Generate a random input of a given length
 fn generate_random_input(length: usize) -> Vec<u8> {
     let mut rng = rand::thread_rng();
     (0..length).map(|_| rng.gen_range(0..=255)).collect()
 }
 
-// Mock feedback function (scalar output)
-fn mock_feedback(input: &Vec<u8>) -> f64 {
+// Mutate input by changing one random byte
+fn mutate_input(input: &[u8]) -> Vec<u8> {
+    let mut rng = rand::thread_rng();
+    let mut new_input = input.to_vec();
+
+    // Pick a random index to mutate
+    if !new_input.is_empty() {
+        let idx = rng.gen_range(0..new_input.len());
+        new_input[idx] = rng.gen_range(0..=255); // Replace with random byte
+    }
+
+    new_input
+}
+
+// Mock feedback function: counts how many bytes are equal to 1
+fn mock_feedback(input: &[u8]) -> f64 {
     input.iter().filter(|&&b| b == 1).count() as f64
 }
